@@ -1,0 +1,11 @@
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\bin\Debug\PngToIcoImageConverter.exe.config
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\bin\Debug\PngToIcoImageConverter.exe
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\bin\Debug\PngToIcoImageConverter.pdb
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.csproj.AssemblyReference.cache
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.csproj.SuggestedBindingRedirects.cache
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.FRM_Main.resources
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.Properties.Resources.resources
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.csproj.GenerateResource.cache
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.csproj.CoreCompileInputs.cache
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.exe
+C:\Users\fille\source\repos\PngToIcoImageConverter\PngToIcoImageConverter\obj\Debug\PngToIcoImageConverter.pdb

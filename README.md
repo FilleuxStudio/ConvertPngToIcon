@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://github.com/Si13n7/ImageToIcon/releases/latest"><img src="https://img.shields.io/github/tag/Si13n7/ImageToIcon.svg?style=flat&label=release&logoWidth=14 logo=windows" alt="release"></a> &nbsp; <a href="https://www.microsoft.com/download/details.aspx?id=55170"><img src="https://img.shields.io/badge/platform->=%20v4.7-lightgrey.svg?style=flat&logo=.net&logoColor=white" alt="platform"><img src="https://img.shields.io/github/last-commit/Si13n7/ImageToIcon.svg?style=flat&logo=github&logoColor=white" alt="last-commit"></a>
+<a href="https://github.com/Si13n7/ImageToIcon/releases/latest"><img src="https://img.shields.io/badge/release-0.1-blue" alt="release"></a> &nbsp; <a href="https://www.microsoft.com/download/details.aspx?id=55170"><img src="https://img.shields.io/badge/Plateform-4.8-lightgrey" alt="platform">  <img src="https://img.shields.io/badge/last%20commit-2023-critical" alt="last-commit"></a>
 
 
 ### Description

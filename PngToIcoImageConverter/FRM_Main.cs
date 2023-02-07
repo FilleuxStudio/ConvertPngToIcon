@@ -1,34 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace PngToIcoImageConverter
 {
     public partial class FRM_Main : Form
     {
-
-        string FolderMyPictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-        int[] imageSizes = new int[] { 8, 16, 32, 48, 64, 72, 128, 256, 512 };
+        readonly string FolderMyPictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+        readonly RadioButton[] RadioButtonsList;
 
         ImageInformation imageInformation;
         public FRM_Main()
         {
             InitializeComponent();
-            imageInformation = new ImageInformation();
+            RadioButtonsList = new RadioButton[] { RB_16, RB_32, RB_48, RB_64, RB_72, RB_128, RB_256, RB_Origin };
         }
 
+        /// <summary>
+        /// Bouton qui permet de sélectionner l'image en Png
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void BT_SetSource_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFile = new OpenFileDialog()
@@ -42,116 +35,24 @@ namespace PngToIcoImageConverter
             {
                 TXT_Source.Text = openFile.FileName;
 
-                imageInformation.FileName = Path.GetFileName(openFile.FileName);
-                imageInformation.FilePath = openFile.FileName;
+                var image = Image.FromFile(openFile.FileName);
+
+                imageInformation = new ImageInformation(Path.GetFileName(openFile.FileName), openFile.FileName, image.Width, image.Height);
             }
         }
 
-        /// <summary>
-        /// Methode qui permet de convertir une image en png vers une icon
-        /// </summary>
-        /// <param name="path">Chemin du fichier source</param>
-        /// <param name="nameFile">Nom du fichier source</param>
-        /// <returns>Bool</returns>
-        private bool ConvertPicturePngToIco(string path, string nameFile)
-        {
-            var images = new Icon[imageSizes.Length];
-
-            for (int i = 0; i < imageSizes.Length; i++)
-            {
-                using (var originalImage = Image.FromFile(path))
-                {
-                    using (var resizedImage = new Bitmap(originalImage, new Size(imageSizes[i], imageSizes[i])))
-                    {
-                        images[i] = Icon.FromHandle(resizedImage.GetHicon());
-                    }
-                }
-            }
-
-            try
-            {
-                string icoFilePath = FolderMyPictures + "\\" + nameFile.Substring(0, nameFile.Length - 4) + ".ico";
-
-                using (var originalImage = Image.FromFile(path))
-                {
-                    var resizedImage = new Bitmap(originalImage, new Size(originalImage.Width, originalImage.Height));
-                    resizedImage.MakeTransparent(Color.Transparent);
-                    var icon = Icon.FromHandle(resizedImage.GetHicon());
-                 
-
-                    using (var iconOutputStream = System.IO.File.Create(icoFilePath))
-                    {
-                        icon.Save(iconOutputStream);
-                    }
-                }
-
-                //using (var originalImage = Image.FromFile(path))
-                //{
-                //    using (var icon = Icon.FromHandle(((Bitmap)originalImage).GetHicon()))
-                //    {
-                //        using (var iconOutputStream = System.IO.File.Create(icoFilePath))
-                //        {
-                //            icon.Save(iconOutputStream);
-                //        }
-                //    }
-                //}
-
-                //using (var iconFileStream = new FileStream(icoFilePath, FileMode.Create))
-                //{
-                //    using (var iconWriter = new BinaryWriter(iconFileStream))
-                //    {
-                //        // Écriture de l'en-tête du fichier icône
-                //        iconWriter.Write((short)0);
-                //        iconWriter.Write((short)1);
-                //        iconWriter.Write((short)images.Length);
-
-                //        // Écriture des entrées pour chaque image
-                //        foreach (var image in images)
-                //        {
-                //            var imageData = GetBytes(image);
-                //            iconWriter.Write(image.Width);
-                //            iconWriter.Write(image.Height);
-                //            iconWriter.Write((byte)0);
-                //            iconWriter.Write((byte)0);
-                //            iconWriter.Write((short)1);
-                //            iconWriter.Write((short)32);
-                //            iconWriter.Write(imageData.Length);
-                //            iconWriter.Write(imageData.Length);
-                //            iconWriter.Write(0);
-                //            iconWriter.Write(0);
-                //            iconWriter.Write(imageData);
-                //        }
-                //    }
-                //}
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-
-
-        }
-
-        /// <summary>
-        /// Methode qui permet de convertir un icon en octet
-        /// retourne un tableau de bytes
-        /// </summary>
-        /// <param name="icon">Icon</param>
-        /// <returns>Bytes array</returns>
-        private byte[] GetBytes(Icon icon)
-        {
-            MemoryStream ms = new MemoryStream();
-            icon.Save(ms);
-            return ms.ToArray();
-        }
 
         private void BT_Convert_Click(object sender, EventArgs e)
         {
-            bool flag = ConvertPicturePngToIco(imageInformation.FilePath, imageInformation.FileName);
+            string icoFilePath = FolderMyPictures + "\\" + imageInformation.FileName.Substring(0, imageInformation.FileName.Length - 4) + ".ico";
+
+            FileStream fileStreamImage = new FileStream(imageInformation.FilePath, FileMode.Open, FileAccess.Read);
+            FileStream fileStreamIcon = new FileStream(icoFilePath, FileMode.CreateNew, FileAccess.Write);
+
+            bool flag = ConverteurImage.ConvertPicturePngToIco(fileStreamImage, fileStreamIcon, GetSizeImage());
+
+            fileStreamImage.Close();
+            fileStreamIcon.Close();
 
             if (flag)
             {
@@ -163,27 +64,65 @@ namespace PngToIcoImageConverter
                 LBL_Message.Text = "Error";
                 LBL_Message.ForeColor = Color.Red;
             }
+
+            fileStreamImage.Dispose();
+            fileStreamIcon.Dispose();
         }
 
         private void BT_OpenFolderDest_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("explorer.exe", FolderMyPictures);
         }
+
+        private Size GetSizeImage()
+        {
+            Size size = new Size();
+            foreach (var check in RadioButtonsList)
+            {
+                switch (check.Name)
+                {
+                    case "RB_16": size = new Size(16, 16); break;
+                    case "RB_32": size = new Size(32, 32); break;
+                    case "RB_48": size = new Size(48, 48); break;
+                    case "RB_64": size = new Size(64, 64); break;
+                    case "RB_72": size = new Size(72, 72); break;
+                    case "RB_128": size = new Size(128, 128); break;
+                    case "RB_256": size = new Size(256, 256); break;
+                    case "RB_Origin": size = imageInformation.Size; break;
+                }
+            }
+            return size;
+        }
     }
 
     public class ImageInformation
     {
-
         public string FileName { get; set; }
         public string FilePath { get; set; }
 
+        public int Width { get; set; }
+        public int Height { get; set; }
+
+        public Size Size { get; }
+
         public ImageInformation() { }
 
-        public ImageInformation(string fileName, string filePath)
+        public ImageInformation(string _fileName, string _filePath)
         {
-            FileName = fileName;
-            FilePath = filePath;
+            FileName = _fileName;
+            FilePath = _filePath;
         }
+
+        public ImageInformation(string _fileName, string _filePath, int _width, int _height)
+        {
+            FileName = _fileName;
+            FilePath = _filePath;
+            Width = _width;
+            Height = _height;
+
+            this.Size = new Size(Width, Height);
+        }
+
     }
 
 }
